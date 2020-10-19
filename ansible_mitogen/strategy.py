@@ -155,6 +155,7 @@ REDIRECTED_CONNECTION_PLUGINS = (
     'machinectl',
     'setns',
     'ssh',
+    'stack',
 )
 
 

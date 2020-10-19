@@ -639,7 +639,7 @@ class TimerList(object):
     def get_timeout(self):
         """
         Return the floating point seconds until the next event is due.
-        
+
         :returns:
             Floating point delay, or 0.0, or :data:`None` if no events are
             scheduled.
@@ -2501,6 +2501,8 @@ class Router(mitogen.core.Router):
     def ssh(self, **kwargs):
         return self.connect(u'ssh', **kwargs)
 
+    def stack(self, **kwargs):
+        return self.connect(u'stack', **kwargs)
 
 class Reaper(object):
     """

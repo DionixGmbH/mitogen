@@ -159,6 +159,49 @@ def _connect_ssh(spec):
         }
     }
 
+def _connect_stack(spec):
+    """
+    Return ContextService arguments for an STACK connection.
+    """
+    if C.HOST_KEY_CHECKING:
+        check_host_keys = 'enforce'
+    else:
+        check_host_keys = 'ignore'
+
+    # #334: tilde-expand private_key_file to avoid implementation difference
+    # between Python and OpenSSH.
+    private_key_file = spec.private_key_file()
+    if private_key_file is not None:
+        private_key_file = os.path.expanduser(private_key_file)
+
+    return {
+        'method': 'stack',
+        'kwargs': {
+            'check_host_keys': check_host_keys,
+            'hostname': spec.remote_addr(),
+            'username': spec.remote_user(),
+            'compression': convert_bool(
+                default(spec.mitogen_ssh_compression(), True)
+            ),
+            'password': spec.password(),
+            'port': spec.port(),
+            'python_path': spec.python_path(),
+            'identity_file': private_key_file,
+            'identities_only': False,
+            'ssh_path': spec.ssh_executable(),
+            'connect_timeout': spec.ansible_ssh_timeout(),
+            'ssh_args': spec.ssh_args(),
+            'ssh_debug_level': spec.mitogen_ssh_debug_level(),
+            'remote_name': get_remote_name(spec),
+            'keepalive_count': (
+                spec.mitogen_ssh_keepalive_count() or 10
+            ),
+            'keepalive_interval': (
+                spec.mitogen_ssh_keepalive_interval() or 30
+            ),
+        }
+    }
+
 def _connect_buildah(spec):
     """
     Return ContextService arguments for a Buildah connection.
@@ -402,6 +445,7 @@ CONNECTION_METHOD = {
     'machinectl': _connect_machinectl,
     'setns': _connect_setns,
     'ssh': _connect_ssh,
+    'stack': _connect_stack,
     'smart': _connect_ssh,  # issue #548.
     'su': _connect_su,
     'sudo': _connect_sudo,
