@@ -198,13 +198,25 @@ class Options(mitogen.parent.Options):
             raise ValueError(self.check_host_keys_msg)
 
         self.hosts_list = self._create_hosts_list(ssh_path)
-        self.origin_host = next(filter(lambda host: host["host_function"] == "origin", self.hosts_list))
-        self.target_host = next(filter(lambda host: host["host_function"] == "target", self.hosts_list))
-        self.hostname = self.origin_host["ansible_host_params"]["ansible_host"]
-        self.username = self.origin_host["ansible_host_params"]["ansible_user"]
-        self.port = self.origin_host["ansible_host_params"]["ansible_port"]
+        self.origin_host = next(
+            filter(lambda host: host["host_function"] == "origin", self.hosts_list)
+        )
+        self.target_host = next(
+            filter(lambda host: host["host_function"] == "target", self.hosts_list)
+        )
+        self.hostname = self.origin_host["ansible_host_params"][
+            "ansible_host"
+        ]
+        self.username = self.origin_host["ansible_host_params"][
+            "ansible_user"
+        ]
+        self.port = self.origin_host["ansible_host_params"][
+            "ansible_port"
+        ]
+        self.password = self.origin_host["ansible_host_params"][
+            "ansible_ssh_pass"
+        ]
         self.check_host_keys = check_host_keys
-        self.password = self.origin_host["ansible_host_params"]["ansible_ssh_pass"]
         self.identity_file = identity_file # TODO: Verify what is this paramater meant for
         self.identities_only = identities_only
         self.compression = compression
@@ -374,5 +386,8 @@ class Connection(mitogen.parent.Connection):
             val = s if s in self.SHLEX_IGNORE else shlex_quote(s).strip()
             base_parts.append(val)
 
-        stack_command = self._make_stack_command(self.options.hosts_list[::-1]).strip().split()
+        stack_command = self._make_stack_command(
+            self.options.hosts_list[::-1]
+        ).strip().split()
+
         return bits + stack_command + base_parts
