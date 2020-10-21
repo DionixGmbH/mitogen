@@ -31,9 +31,9 @@ import os.path
 import sys
 
 DOCUMENTATION = """
-    author: David Wilson <dw@botanicus.net>
-    connection: mitogen_ssh
-    short_description: Connect over SSH via Mitogen
+    author: Esteban Cruz Torres <charlie@dionix.mx>
+    connection: mitogen_stack
+    short_description: Connect over SSH to a remote LXD or Docker container via Mitogen
     description:
         - This connects using an OpenSSH client controlled by the Mitogen for
           Ansible extension. It accepts every option the vanilla ssh plugin

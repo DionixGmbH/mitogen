@@ -196,11 +196,11 @@ class Options(mitogen.parent.Options):
 
         if check_host_keys not in ('accept', 'enforce', 'ignore'):
             raise ValueError(self.check_host_keys_msg)
+
         self.ssh_path = ssh_path
         self.hosts_list = self.create_hosts_list(ssh_path)
         self.origin_host = next(filter(lambda host: host["host_function"] == "origin", self.hosts_list))
         self.target_host = next(filter(lambda host: host["host_function"] == "target", self.hosts_list))
-
         self.hostname = self.origin_host["ansible_host_params"]["ansible_host"]
         self.username = self.origin_host["ansible_host_params"]["ansible_user"]
         self.port = self.origin_host["ansible_host_params"]["ansible_port"]
@@ -217,6 +217,14 @@ class Options(mitogen.parent.Options):
             self.ssh_args = ssh_args
         if ssh_debug_level:
             self.ssh_debug_level = ssh_debug_level
+
+    # Creates and returns a list with dicts that contains information and parameters needed to reach the target
+    # container(the ssh host, and all containers involved to reach the target),
+    # every dict is listed in the order needed to reach the target,
+    # There are 3 types of host_function values that every dict contain:
+    #   target: the container where Ansible modules will be executed
+    #   intermediary: a container that is not the target but we have to pass through
+    #   origin: the origin machine, the one we really are connecting to
 
     def create_hosts_list(self, current_host, hosts=None):
         if hosts == None:
