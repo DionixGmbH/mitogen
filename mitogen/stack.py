@@ -217,7 +217,7 @@ class Options(mitogen.parent.Options):
             "ansible_ssh_pass"
         ]
         self.check_host_keys = check_host_keys
-        self.identity_file = identity_file # TODO: Verify what is this paramater meant for
+        self.identity_file = identity_file 
         self.identities_only = identities_only
         self.compression = compression
         self.keepalive_enabled = keepalive_enabled
