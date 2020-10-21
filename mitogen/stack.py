@@ -197,7 +197,6 @@ class Options(mitogen.parent.Options):
         if check_host_keys not in ('accept', 'enforce', 'ignore'):
             raise ValueError(self.check_host_keys_msg)
 
-        self.ssh_path = ssh_path
         self.hosts_list = self._create_hosts_list(ssh_path)
         self.origin_host = next(filter(lambda host: host["host_function"] == "origin", self.hosts_list))
         self.target_host = next(filter(lambda host: host["host_function"] == "target", self.hosts_list))
