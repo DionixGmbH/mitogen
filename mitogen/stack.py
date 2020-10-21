@@ -198,7 +198,7 @@ class Options(mitogen.parent.Options):
             raise ValueError(self.check_host_keys_msg)
 
         self.ssh_path = ssh_path
-        self.hosts_list = self.create_hosts_list(ssh_path)
+        self.hosts_list = self._create_hosts_list(ssh_path)
         self.origin_host = next(filter(lambda host: host["host_function"] == "origin", self.hosts_list))
         self.target_host = next(filter(lambda host: host["host_function"] == "target", self.hosts_list))
         self.hostname = self.origin_host["ansible_host_params"]["ansible_host"]
@@ -226,7 +226,7 @@ class Options(mitogen.parent.Options):
     #   intermediary: a container that is not the target but we have to pass through
     #   origin: the origin machine, the one we really are connecting to
 
-    def create_hosts_list(self, current_host, hosts=None):
+    def _create_hosts_list(self, current_host, hosts=None):
         if hosts == None:
             origin_host = json.loads(
                 current_host.replace("'", '"').replace("True", "true").replace("False", "false")
@@ -242,7 +242,7 @@ class Options(mitogen.parent.Options):
                     "container_type": current_host["container_type"],
                 }
             ]
-            self.create_hosts_list(origin_host, hosts)
+            self._create_hosts_list(origin_host, hosts)
 
         elif current_host["ansible_connection"] == "stack":
             hosts.append(
@@ -253,7 +253,7 @@ class Options(mitogen.parent.Options):
                     "container_type": current_host["ansible_host"]["container_type"],
                 }
             )
-            self.create_hosts_list(current_host, hosts)
+            self._create_hosts_list(current_host, hosts)
 
         elif current_host["ansible_connection"] == "ssh":
             current_host["ssh_executable"] = "ssh"
